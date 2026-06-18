@@ -1,9 +1,12 @@
-# Example: run RLSGuard on every push / pull request and surface findings in the
-# GitHub Security tab. Copy this into your Supabase project's
-# .github/workflows/ directory.
+# Demo workflow: runs RLSGuard on this repo (including its deliberately
+# vulnerable fixtures) on every push / PR to master and surfaces findings in the
+# GitHub Security tab. `continue-on-error` keeps the build green even though the
+# demo fixtures contain a planted credential, so the repo still shows passing.
 #
-# In your own repo, replace `uses: ./` with the published action reference, e.g.:
-#   uses Sezman/RLSGuard@v1
+# To use RLSGuard in your OWN Supabase project, copy a workflow like this into
+# .github/workflows/, drop `continue-on-error`, point `path` at your project
+# root, and replace `uses: ./` with the published action:
+#   uses: Sezman/RLSGuard@v1
 name: RLSGuard
 
 on:
@@ -16,16 +19,17 @@ on:
 permissions:
   contents: read
   security-events: write
-  
+
 jobs:
   rlsguard:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Scan Supabase project
-        uses: ./                # in a consumer repo: Sezman/RLSGuard@v1
+      - name: Scan project (demo)
+        uses: ./                  # in a consumer repo: Sezman/RLSGuard@v1
+        continue-on-error: true   # demo repo: surface findings without failing the build
         with:
           path: "."
-          fail-on: "high"       # fail the build on high/critical findings
-          explain: "true"       # attach Supabase doc citations
+          fail-on: "high"         # in your project: fail the build on high/critical
+          explain: "true"         # attach Supabase doc citations
