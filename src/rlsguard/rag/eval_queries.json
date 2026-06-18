@@ -1,0 +1,110 @@
+[
+  {
+    "id": "key-frontend",
+    "query": "service role key committed in the frontend source code",
+    "rule_id": "SUPA-KEY-001",
+    "relevant": ["api-keys", "api-keys-publishable-vs-secret", "service-role-bypasses-rls"]
+  },
+  {
+    "id": "key-env-password",
+    "query": "database password left in a committed .env file",
+    "rule_id": "SUPA-KEY-001",
+    "relevant": ["api-keys", "api-keys-publishable-vs-secret", "service-role-bypasses-rls"]
+  },
+  {
+    "id": "key-anon-safe",
+    "query": "is the publishable anon key safe to ship in the browser",
+    "rule_id": null,
+    "relevant": ["api-keys-publishable-vs-secret", "api-keys"]
+  },
+  {
+    "id": "key-bypassrls",
+    "query": "which supabase key bypasses RLS and must stay on the server",
+    "rule_id": null,
+    "relevant": ["service-role-bypasses-rls", "api-keys-publishable-vs-secret"]
+  },
+  {
+    "id": "rls-disabled",
+    "query": "table in the public schema has row level security disabled",
+    "rule_id": "SUPA-RLS-001",
+    "relevant": ["rls-basics", "rls-roles-and-policies"]
+  },
+  {
+    "id": "rls-anon-role",
+    "query": "how do the anon and authenticated roles affect policy evaluation",
+    "rule_id": null,
+    "relevant": ["rls-roles-and-policies"]
+  },
+  {
+    "id": "rls-no-policies",
+    "query": "RLS enabled but no policies so every query returns nothing",
+    "rule_id": "SUPA-RLS-002",
+    "relevant": ["rls-basics", "rls-roles-and-policies"]
+  },
+  {
+    "id": "rls-using-true",
+    "query": "policy expression is simply using true and exposes every row",
+    "rule_id": "SUPA-RLS-003",
+    "relevant": ["rls-unrestricted-policies", "rls-restrictive-vs-permissive", "column-level-security"]
+  },
+  {
+    "id": "rls-permissive",
+    "query": "permissive policies are combined with OR and widen access",
+    "rule_id": null,
+    "relevant": ["rls-restrictive-vs-permissive"]
+  },
+  {
+    "id": "rls-sensitive-columns",
+    "query": "table exposes sensitive email and phone columns to everyone",
+    "rule_id": null,
+    "relevant": ["column-level-security"]
+  },
+  {
+    "id": "rls-update-check",
+    "query": "update policy defines using but no with check clause",
+    "rule_id": "SUPA-RLS-004",
+    "relevant": ["rls-update-with-check"]
+  },
+  {
+    "id": "rls-ownership",
+    "query": "policy does not scope rows to the owner with auth.uid",
+    "rule_id": "SUPA-RLS-005",
+    "relevant": ["rls-ownership", "rls-restrictive-vs-permissive"]
+  },
+  {
+    "id": "rls-wrong-column",
+    "query": "policy compares auth.uid to the wrong column letting users read other rows",
+    "rule_id": null,
+    "relevant": ["rls-ownership"]
+  },
+  {
+    "id": "func-definer",
+    "query": "security definer function runs as owner and can bypass row level security",
+    "rule_id": "SUPA-FUNC-001",
+    "relevant": ["security-definer-functions", "service-role-bypasses-rls"]
+  },
+  {
+    "id": "func-search-path",
+    "query": "pin the search path on a function to prevent schema injection",
+    "rule_id": null,
+    "relevant": ["security-definer-functions"]
+  },
+  {
+    "id": "storage-ownership",
+    "query": "storage policy only checks bucket_id and not the file owner",
+    "rule_id": "SUPA-STORAGE-001",
+    "relevant": ["storage-access-control", "storage-private-buckets"]
+  },
+  {
+    "id": "storage-public-bucket",
+    "query": "public storage bucket serves files without any RLS check",
+    "rule_id": null,
+    "relevant": ["storage-private-buckets"]
+  },
+  {
+    "id": "storage-foldername",
+    "query": "scope storage access to a per-user folder with storage.foldername",
+    "rule_id": null,
+    "relevant": ["storage-access-control", "storage-private-buckets"]
+  }
+]

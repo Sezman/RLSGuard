@@ -36,11 +36,16 @@ MVP rule set complete — all eight initial rules implemented and tested:
 - Scans JS/TS/JSX/TSX and `.env` files (skips `node_modules`, build dirs)
 - Text and JSON output, `--fail-on` threshold, exit codes (0 / 1 / 2)
 - **RAG explanations (`--explain`)** — retrieves relevant Supabase docs from a
-  bundled corpus (offline BM25) and attaches citations to each finding;
-  optionally generates a beginner-friendly explanation via Claude when
-  `ANTHROPIC_API_KEY` is set. The RAG layer only explains findings — it never
-  decides whether a vulnerability exists — and always falls back to the
-  predefined explanation.
+  bundled corpus of curated documentation (offline BM25 with a rule-id boost)
+  and attaches citations to each finding; optionally generates a
+  beginner-friendly explanation via Claude when `ANTHROPIC_API_KEY` is set. The
+  RAG layer only explains findings — it never decides whether a vulnerability
+  exists — and always falls back to the predefined explanation.
+- **Retrieval evaluation harness (`rlsguard rag-eval`)** — a labeled query set
+  with standard IR metrics (hit rate, recall@k, precision@k, MRR), so retrieval
+  quality is measured rather than assumed. Current corpus scores hit rate 1.00,
+  MRR 1.00, recall@2 0.94, precision@2 0.81 over 18 queries, and a test guards
+  against regressions.
 
 ## RAG explanations
 
@@ -52,6 +57,17 @@ rlsguard scan ./my-project --explain
 pip install -e .[rag]
 $env:ANTHROPIC_API_KEY = "sk-ant-..."
 rlsguard scan ./my-project --explain
+```
+
+### Measuring retrieval quality
+
+The retriever is evaluated against a labeled query set so corpus or ranking
+changes can be proven not to regress:
+
+```powershell
+rlsguard rag-eval            # summary metrics table
+rlsguard rag-eval --verbose  # per-query retrieved docs
+rlsguard rag-eval --json     # machine-readable metrics
 ```
 
 ## Install (development)
